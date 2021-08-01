@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies API </title>
+    <style>
+        input{
+            width: 70%;
+            height: 30px;   
+            border-radius: 5px;    
+            margin: 0 0 1rem 5rem; 
+        }
+        button {
+            height: 36px;
+            border-radius: 5px;
+        }
+       
+        body{
+            background-color: #1f1f1f;
+            color:white;
+        }
+        .main_div{
+            width:100%;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+ 
+        }
+        img{
+            border: 3px solid black;
+            height: 300px;
+        }
+        .clsimg{
+            display: flex;
+            align-items: center;
+        }
+        .recClass{
+            display: inline-block;
+
+            width:100px;
+            height: 15px;
+            background-color: #eceb98;
+            color:rgb(126, 19, 19);
+            padding: .4rem .8rem;
+            border-radius: 1rem;
+        }
+        p{
+            margin:5px;
+        }
+    </style>
+</head>
+
+<body>
+   <input type="text" id="Title" placeholder="search for a movie title">
+   <button id="search" onclick="getMovies()"> search</button>
+   <div id='addeverything'></div>
+   
+</body>
+</html>
+<script>
+
+
+
+    async function getMovies(){
+        let data = '';
+        
+        let Title=document.getElementById("Title").value;
+        let main_div = document.getElementById('addeverything');
+        main_div.setAttribute('class','main_div')
+        main_div.innerHTML='';
+        let img = document.createElement('img')
+        img.setAttribute('class','clsimg')
+
+        let cast = document.createElement('p');
+        let rating = document.createElement('p')
+        let director = document.createElement('p')
+        let genre = document.createElement('p');
+        let imdbrating = document.createElement('p');
+        let recommend = document.createElement('p')
+        recommend.setAttribute('class','recClass')
+        
+
+
+        try{
+
+            let responce=await fetch (` http://www.omdbapi.com/?t=${Title}&apikey=98feb003`);
+            let data=await responce.json();
+            console.log('data:', data);
+            if(data.Error== 'Movie not found!'){
+                let errorImg =document.createElement('img')
+            errorImg.src = 'https://th.bing.com/th/id/OIP.dpXKpqzd2m3NwhRObber-gHaE7?pid=ImgDet&rs=1'
+            main_div.append(errorImg)
+            }else{
+            img.src = data.Poster;
+           
+            cast.textContent = `Cast: ${data.Actors}`;
+            rating.textContent = 'Rated(US): '+data.Rated;
+            director.textContent = 'Director: '+data.Director;
+            genre.textContent = 'Genre: '+ data.Genre;
+            imdbrating = 'ImdbRating: '+ data.imdbRating+' / 10';
+            recommend.textContent='recommended';
+            if(Number(data.imdbRating) >= Number(8.5)){
+                    recommend.textContent = 'recommended';
+                    main_div.append(img,rating,cast,director,genre,imdbrating,recommend)
+
+
+            }else{
+
+
+            main_div.append(img,rating,cast,director,genre,imdbrating)
+            }
+        }
+            
+        }catch (err){
+            console.log( 'err:',err);
+            
+        }
+    }
+
+
+</script>
