@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href = "https://fonts.googleapis.com/icon?family=Material+Icons" rel = "stylesheet">
+    <title>Document</title>
+    <style>
+        .container1{
+            display: flex;
+            align-items: center;
+            
+        }
+
+        .nav1 div{
+            background-color: black;
+            font-weight: 1;
+            height:1px;
+            margin:5px 0;
+        }
+        .nav1 {
+            width : 20px;
+            display:block;
+            margin-right: 1em;
+        }
+        #img1{
+            margin: 0 50px 0 0; 
+        }
+        #search{
+            margin: .2em 0 0 0;
+            width: 730px;
+            height: 28px;
+            padding: 1px 0 1px 15px;
+            color: black;
+            border-radius: 1px;
+        }
+        #videos{
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            
+            padding-top: 10px;
+            margin-left: 10px;
+
+        }
+        #mostPopular{
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+
+            padding-top:10px;
+            margin-left:10px;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container1">
+            <a href='#' class='nav1'>
+                <div class='one'></div>
+                <div class='two'></div>
+                <div class='three'></div>
+            </a>
+           <img id ='img1' src='https://i.ibb.co/nkw8FN8/ytimage.png' width="100">
+           <div><input type='text' id='search' placeholder="search"/></div>
+           <button onclick='searchIt()'><i class="material-icons " style="margin-top: 1px;">search</i></button>
+           <i class="material-icons" style="margin: 5px 55px 5px 5px;">mic</i>
+           <i class="material-icons"style='margin:15px'>video_call</i>
+           <i class="material-icons"style='margin:15px 20px'>apps</i>
+           <i class="material-icons"style='margin:15px 20px 15px 10px'>notifications</i>
+           <i class="material-icons">account_circle</i>
+        </div>
+        <div id='videos'></div>
+        <div id='mostPopular'></div>
+        
+    </div>
+    
+</body>
+</html>
+<script>
+     let div_1 = document.getElementById('videos');
+     let div_2 = document.getElementById('mostPopular');
+
+    async function searchIt(){
+
+        let query = document.getElementById('search').value;
+        let responce = await fetch(`https://www.googleapis.com/youtube/v3/search?q=${query}&key=AIzaSyCFYvZ6NGm4cqwqTXJDsBpYjcY7ZL48Qd8&maxResults=21`);
+        let data = await responce.json();
+        console.log('data:', data)
+
+        // let div_1 = document.getElementById('videos');
+        div_1.innerHTML ='';
+        div_2.innerHTML ='';
+
+        let {items} = data;
+
+        items = items.filter((el) => {
+            return el.id.videoId != undefined;
+
+        })
+
+        items.forEach(({ id: { videoId } }) => {
+        console.log(videoId);
+        let div11 = document.createElement("div");
+        div11.innerHTML=`<iframe width="274" height="154" src="https://www.youtube.com/embed/${videoId}" title="YouTube">`
+        div_1.append(div11)
+        });
+    }
+
+    async function ythome() {
+        let responce = await
+        fetch(
+            "https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=US&key=AIzaSyCC6x-eTZYBPY2RLsaobLyXCZxklTkFNw8&maxResults=20"
+        )
+       
+        // let div_2 = document.getElementById('mostPopular');
+        let data = await responce.json();
+        console.log('data:', data)
+        div_1.innerHTML ='';
+
+        div_2.innerHTML ='';
+        let {
+            items
+        } = data;
+
+        items = items.filter((el) => {
+            return el.id != undefined;
+
+        })
+        items.forEach(({ id}) => {
+        console.log(id);
+        let div12 = document.createElement("div");
+        div12.innerHTML=`<iframe width="274" height="154" src="https://www.youtube.com/embed/${id}" title="YouTube">`
+            
+        div_2.append(div12)
+        });
+    }
+
+    ythome();//calling popular video function
+    
+
+</script>
